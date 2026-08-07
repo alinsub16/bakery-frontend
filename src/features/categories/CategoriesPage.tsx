@@ -6,6 +6,7 @@ import { useCategories } from '@/features/categories/hooks'
 import { CategoryTable } from '@/features/categories/components/CategoryTable'
 import { CategoryFormModal } from '@/features/categories/components/CategoryFormModal'
 import type { Category } from '@/types/category'
+import { RoleGate } from '@/components/ui/RoleGate'
 
 type StatusFilter = 'all' | 'active' | 'inactive'
 
@@ -37,9 +38,11 @@ export function CategoriesPage() {
           <h1 className="font-display text-2xl font-semibold text-ink">Categories</h1>
           <p className="mt-1 text-sm text-muted">Group your breads for easier organization and reporting.</p>
         </div>
-        <Button icon={<Plus size={16} />} onClick={openCreateModal}>
-          New category
-        </Button>
+        <RoleGate allowedRoles={['admin', 'manager']}>
+          <Button icon={<Plus size={16} />} onClick={openCreateModal}>
+            New category
+          </Button>
+        </RoleGate>
       </div>
 
       <Card padding="md">

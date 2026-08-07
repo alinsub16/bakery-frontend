@@ -1,6 +1,6 @@
 import { DollarSign, TrendingUp, ShoppingBag, Package } from 'lucide-react'
-import { StatCard } from './components/StatCard'
-import { RevenueTrendChart } from './components/RevenueTrendChart'
+import { StatCard } from '../../components/ui/StatCard'
+import { RevenueTrendChart } from '../../components/charts/RevenueTrendChart'
 import { PendingLists } from './components/PendingLists'
 import { LowStockList } from './components/LowStockList'
 import { useDashboardSummary, useRevenueTrend } from './hooks'
