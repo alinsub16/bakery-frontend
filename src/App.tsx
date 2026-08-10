@@ -8,6 +8,10 @@ import { BreadsPage } from '@/features/breads/BreadsPage'
 import { ProductionPage } from '@/features/production/ProductionPage'
 import { InventoryPage } from '@/features/inventory/InventoryPage'
 import { SalesPage } from '@/features/sales/SalesPage'
+import { VarianceReportPage } from '@/features/variance/VarianceReportPage'
+import { RoleGuard } from '@/routes/RoleGuard'
+import { UsersPage } from '@/features/users/UsersPage'
+import { ActivityLogsPage } from '@/features/activityLogs/ActivityLogsPage'
 
 
 export function App() {
@@ -24,6 +28,15 @@ export function App() {
             <Route path="/production" element={<ProductionPage />} />
             <Route path="/inventory" element={<InventoryPage />} />
             <Route path="/sales" element={<SalesPage />} />
+            <Route path="/reports/variance" element={<VarianceReportPage />} />
+
+            <Route element={<RoleGuard allowedRoles={['admin']} />}>
+              <Route path="/users" element={<UsersPage />} />
+            </Route>
+
+            <Route element={<RoleGuard allowedRoles={['admin', 'manager']} />}>
+              <Route path="/activity-logs" element={<ActivityLogsPage />} />
+            </Route>
           </Route>
         </Route>
       </Routes>
