@@ -8,6 +8,7 @@ import { useCategories } from '@/features/categories/hooks'
 import { BreadTable } from './components/BreadTable'
 import { BreadFormModal } from './components/BreadFormModal'
 import type { Bread } from '@/types/bread'
+import { OpeningBalanceModal } from '@/features/openingBalance/components/OpeningBalanceModal'
 
 type StatusFilter = 'all' | 'active' | 'inactive'
 
@@ -17,6 +18,7 @@ export function BreadsPage() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingBread, setEditingBread] = useState<Bread | null>(null)
+  const [balanceBread, setBalanceBread] = useState<Bread | null>(null)
 
   const { data: categoriesData } = useCategories({ is_active: true })
   const { data, isLoading, isError } = useBreads({
@@ -96,11 +98,21 @@ export function BreadsPage() {
         ) : isError ? (
           <p className="py-12 text-center text-sm text-danger">Couldn't load breads. Try refreshing.</p>
         ) : (
-          <BreadTable breads={data?.data ?? []} onEdit={openEditModal} />
+          <BreadTable breads={data?.data ?? []}
+           onEdit={openEditModal} 
+           onOpeningBalance={setBalanceBread}/>
         )}
       </Card>
 
-      <BreadFormModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} bread={editingBread} />
+      <BreadFormModal isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        bread={editingBread} 
+      />
+      <OpeningBalanceModal
+        isOpen={Boolean(balanceBread)}
+        onClose={() => setBalanceBread(null)}
+        bread={balanceBread}
+      />
     </div>
   )
 }

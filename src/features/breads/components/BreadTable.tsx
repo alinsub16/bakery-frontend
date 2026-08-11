@@ -1,4 +1,4 @@
-import { Pencil, Power } from 'lucide-react'
+import { Pencil, Power, Wallet } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { RoleGate } from '@/components/ui/RoleGate'
@@ -9,9 +9,10 @@ import type { Bread } from '@/types/bread'
 interface BreadTableProps {
   breads: Bread[]
   onEdit: (bread: Bread) => void
+  onOpeningBalance: (bread: Bread) => void
 }
 
-export function BreadTable({ breads, onEdit }: BreadTableProps) {
+export function BreadTable({ breads, onEdit, onOpeningBalance }: BreadTableProps) {
   const toggleStatus = useToggleBreadStatus()
 
   if (breads.length === 0) {
@@ -48,6 +49,14 @@ export function BreadTable({ breads, onEdit }: BreadTableProps) {
                   <div className="flex justify-end gap-1">
                     <Button size="sm" variant="ghost" icon={<Pencil size={14} />} onClick={() => onEdit(bread)}>
                       Edit
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      icon={<Wallet size={14} />}
+                      onClick={() => onOpeningBalance(bread)}
+                    >
+                      Balance
                     </Button>
                     <Button
                       size="sm"

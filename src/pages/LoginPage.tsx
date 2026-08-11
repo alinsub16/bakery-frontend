@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { Wheat } from 'lucide-react'
 import { apiClient } from '@/lib/apiClient'
 import { useAuthStore } from '@/stores/authStore'
@@ -45,14 +45,14 @@ export function LoginPage() {
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15">
             <Wheat size={18} />
           </div>
-          <span className="font-display text-lg font-semibold">Breadline</span>
+          <span className="font-display text-lg font-semibold">Little Panaderos</span>
         </div>
 
         <div>
           <h1 className="font-display text-4xl font-semibold leading-tight">
-            Every loaf,
+            Every bite
             <br />
-            accounted for.
+            is blessing.
           </h1>
           <p className="mt-4 max-w-sm text-white/80">
             Track production, closing stock, and sales in one place — from
@@ -113,7 +113,13 @@ export function LoginPage() {
             <Button type="submit" isLoading={isSubmitting} className="w-full">
              Sign in
             </Button>
-          </form>   
+          </form>
+          <p className="mt-6 text-center text-sm text-muted">
+            Need an account?{' '}
+            <Link to="/register" className="font-medium text-terracotta hover:underline">
+              Register here
+            </Link>
+          </p>   
         </div>
       </div>
     </div>
