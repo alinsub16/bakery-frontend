@@ -3,12 +3,13 @@ import { Plus } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Tabs } from '@/components/ui/Tabs'
-import { useUsers, usePendingUsers } from './hooks'
+import { useUsers, usePendingUsers, useDeactivatedUsers } from './hooks'
 import { ActiveUsersTable } from './components/ActiveUsersTable'
 import { PendingUsersTable } from './components/PendingUsersTable'
 import { CreateUserModal } from './components/CreateUserModal'
+import { DeactivatedUsersTable } from './components/DeactivatedUsersTable'
 
-type UserTab = 'active' | 'pending'
+type UserTab = 'active' | 'pending' | 'deactivated'
 
 export function UsersPage() {
   const [tab, setTab] = useState<UserTab>('active')
@@ -16,6 +17,7 @@ export function UsersPage() {
 
   const { data: activeData, isLoading: isLoadingActive, isError: isErrorActive } = useUsers()
   const { data: pendingData, isLoading: isLoadingPending, isError: isErrorPending } = usePendingUsers()
+  const { data: deactivatedData, isLoading: isLoadingDeactivated, isError: isErrorDeactivated } = useDeactivatedUsers()
 
   const pendingCount = pendingData?.data.length ?? 0
 
@@ -37,11 +39,12 @@ export function UsersPage() {
         options={[
           { value: 'active', label: 'Active users' },
           { value: 'pending', label: `Pending approvals${pendingCount > 0 ? ` (${pendingCount})` : ''}` },
+          { value: 'deactivated', label: 'Deactivated' },
         ]}
       />
 
       <Card padding="md">
-        {tab === 'active' ? (
+        {tab === 'active' && (
           isLoadingActive ? (
             <TableSkeleton />
           ) : isErrorActive ? (
@@ -49,12 +52,26 @@ export function UsersPage() {
           ) : (
             <ActiveUsersTable users={activeData?.data ?? []} />
           )
-        ) : isLoadingPending ? (
-          <TableSkeleton />
-        ) : isErrorPending ? (
-          <p className="py-12 text-center text-sm text-danger">Couldn't load pending registrations.</p>
-        ) : (
-          <PendingUsersTable users={pendingData?.data ?? []} />
+        )}
+
+        {tab === 'pending' && (
+          isLoadingPending ? (
+            <TableSkeleton />
+          ) : isErrorPending ? (
+            <p className="py-12 text-center text-sm text-danger">Couldn't load pending registrations.</p>
+          ) : (
+            <PendingUsersTable users={pendingData?.data ?? []} />
+          )
+        )}
+
+        {tab === 'deactivated' && (
+          isLoadingDeactivated ? (
+            <TableSkeleton />
+          ) : isErrorDeactivated ? (
+            <p className="py-12 text-center text-sm text-danger">Couldn't load deactivated users.</p>
+          ) : (
+            <DeactivatedUsersTable users={deactivatedData?.data ?? []} />
+          )
         )}
       </Card>
 

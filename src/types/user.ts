@@ -23,3 +23,10 @@ export interface CreateUserValues {
   password: string
   role: string
 }
+export interface DeactivatedUser {
+  id: number
+  name: string
+  email: string
+  role: string | null
+  deactivated_at: string
+}

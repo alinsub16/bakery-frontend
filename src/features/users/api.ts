@@ -1,5 +1,5 @@
 import { apiClient } from '@/lib/apiClient'
-import type { ActiveUser, CreateUserValues, PendingUser, Role } from '@/types/user'
+import type { ActiveUser, CreateUserValues, PendingUser, Role, DeactivatedUser } from '@/types/user'
 import type { PaginatedResponse } from '@/types/pagination'
 
 export async function fetchRoles() {
@@ -44,5 +44,9 @@ export async function deactivateUser(id: number) {
 
 export async function activateUser(id: number) {
   const { data } = await apiClient.patch(`/users/${id}/activate`)
+  return data
+}
+export async function fetchDeactivatedUsers() {
+  const { data } = await apiClient.get<PaginatedResponse<DeactivatedUser>>('/users/deactivated')
   return data
 }

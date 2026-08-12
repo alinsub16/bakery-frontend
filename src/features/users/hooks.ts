@@ -9,12 +9,14 @@ import {
   fetchUsers,
   rejectUser,
   updateUserRole,
+  fetchDeactivatedUsers,
 } from './api'
 import type { CreateUserValues } from '@/types/user'
 
 const USERS_KEY = ['users']
 const PENDING_KEY = ['users', 'pending']
 const ROLES_KEY = ['roles']
+const DEACTIVATED_KEY = ['users', 'deactivated']
 
 export function useRoles() {
   return useQuery({ queryKey: ROLES_KEY, queryFn: fetchRoles })
@@ -75,6 +77,14 @@ export function useActivateUser() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (id: number) => activateUser(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: USERS_KEY }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: USERS_KEY })
+      queryClient.invalidateQueries({ queryKey: DEACTIVATED_KEY })
+    },
+    
   })
+}
+
+export function useDeactivatedUsers() {
+  return useQuery({ queryKey: DEACTIVATED_KEY, queryFn: fetchDeactivatedUsers })
 }
