@@ -32,7 +32,7 @@ export function Sidebar() {
   )
 
   return (
-    <aside className="flex h-screen w-64 flex-col border-r border-border bg-cream/40">
+    <aside className="no-print flex h-screen w-64 flex-col border-r border-border bg-cream/40">
       <div className="flex items-center gap-2 px-6 py-6">
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-terracotta text-white">
           <Wheat size={18} />
@@ -40,7 +40,7 @@ export function Sidebar() {
         <span className="font-display text-lg font-semibold text-ink">Breadline</span>
       </div>
 
-      <nav className="flex-1 space-y-1 px-3">
+      <nav className="flex-1 space-y-1 overflow-y-auto px-3">
         {visibleItems.map(({ label, to, icon: Icon }) => (
           <NavLink
             key={to}

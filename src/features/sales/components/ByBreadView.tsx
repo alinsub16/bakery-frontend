@@ -3,12 +3,29 @@ import { Card } from '@/components/ui/Card'
 import { RevenueBarChart } from '@/components/charts/RevenueBarChart'
 import { useSalesByBread } from '../hooks'
 import { formatCurrency, formatISODate, subtractDays } from '@/lib/format'
+import { ReportActions } from '@/components/ui/ReportActions'
+import { PrintHeader } from '@/components/ui/PrintHeader'
+import { downloadCsv } from '@/lib/exportCsv'
 
 export function ByBreadView() {
   const [from, setFrom] = useState(formatISODate(subtractDays(new Date(), 29)))
   const [to, setTo] = useState(formatISODate(new Date()))
 
   const { data, isLoading, isError } = useSalesByBread(from, to)
+
+  const handleExportCsv = () => {
+    if (!data) return
+    downloadCsv(
+      `sales-by-bread_${from}_to_${to}.csv`,
+      data.map((entry) => ({
+        Bread: entry.bread.name,
+        SKU: entry.bread.sku,
+        'Units Sold': entry.total_sold_quantity,
+        Revenue: entry.total_revenue.toFixed(2),
+        Profit: entry.total_profit.toFixed(2),
+      }))
+    )
+  }
 
   const chartData = (data ?? []).slice(0, 8).map((entry) => ({
     label: entry.bread.name,
@@ -17,9 +34,12 @@ export function ByBreadView() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end gap-3">
-        <DateField label="From" value={from} onChange={setFrom} max={to} />
-        <DateField label="To" value={to} onChange={setTo} max={formatISODate(new Date())} />
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div className="flex flex-wrap items-end gap-3">
+          <DateField label="From" value={from} onChange={setFrom} max={to} />
+          <DateField label="To" value={to} onChange={setTo} max={formatISODate(new Date())} />
+        </div>
+        {data && <ReportActions onExportCsv={handleExportCsv} />}
       </div>
 
       {isError ? (
@@ -28,6 +48,8 @@ export function ByBreadView() {
         <div className="h-64 animate-pulse rounded-2xl border border-border bg-white" />
       ) : (
         <>
+          <PrintHeader title="Sales Report — By Bread" subtitle={`${from} to ${to}`} />
+          
           <Card title="Top breads by revenue">
             <RevenueBarChart data={chartData} layout="vertical" />
           </Card>

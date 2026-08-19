@@ -21,3 +21,29 @@ body {
   @apply bg-[#FDFBF3] text-ink antialiased;
   font-family: var(--font-sans);
 }
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  body {
+    background: white !important;
+  }
+
+  main {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .print-section {
+    break-inside: avoid;
+  }
+}
+
+.print-only {
+  display: none;
+}

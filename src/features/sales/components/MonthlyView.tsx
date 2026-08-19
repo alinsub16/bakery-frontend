@@ -5,6 +5,9 @@ import { StatCard } from '@/components/ui/StatCard'
 import { RevenueAreaChart } from '@/components/charts/RevenueAreaChart'
 import { useSalesMonthly } from '../hooks'
 import { formatCurrency } from '@/lib/format'
+import { ReportActions } from '@/components/ui/ReportActions'
+import { PrintHeader } from '@/components/ui/PrintHeader'
+import { downloadCsv } from '@/lib/exportCsv'
 
 const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December']
 
@@ -15,30 +18,46 @@ export function MonthlyView() {
 
   const { data, isLoading, isError } = useSalesMonthly(year, month)
 
+  const handleExportCsv = () => {
+    if (!data) return
+    downloadCsv(
+      `sales-monthly_${year}-${String(month).padStart(2, '0')}.csv`,
+      data.daily_breakdown.map((entry) => ({
+        Date: entry.date,
+        'Units Sold': entry.sold_quantity,
+        Revenue: entry.revenue.toFixed(2),
+        Profit: entry.profit.toFixed(2),
+      }))
+    )
+  }
+
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end gap-3">
-        <div>
-          <label className="block text-xs font-medium text-muted">Month</label>
-          <select
-            value={month}
-            onChange={(e) => setMonth(Number(e.target.value))}
-            className="mt-1 rounded-xl border border-border px-3 py-2 text-sm outline-none focus:border-terracotta focus:ring-2 focus:ring-terracotta/20"
-          >
-            {MONTH_NAMES.map((name, i) => (
-              <option key={name} value={i + 1}>{name}</option>
-            ))}
-          </select>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div className="flex flex-wrap items-end gap-3">
+          <div>
+            <label className="block text-xs font-medium text-muted">Month</label>
+            <select
+              value={month}
+              onChange={(e) => setMonth(Number(e.target.value))}
+              className="mt-1 rounded-xl border border-border px-3 py-2 text-sm outline-none focus:border-terracotta focus:ring-2 focus:ring-terracotta/20"
+            >
+              {MONTH_NAMES.map((name, i) => (
+                <option key={name} value={i + 1}>{name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-muted">Year</label>
+            <input
+              type="number"
+              value={year}
+              onChange={(e) => setYear(Number(e.target.value))}
+              className="mt-1 w-24 rounded-xl border border-border px-3 py-2 text-sm outline-none focus:border-terracotta focus:ring-2 focus:ring-terracotta/20"
+            />
+          </div>
         </div>
-        <div>
-          <label className="block text-xs font-medium text-muted">Year</label>
-          <input
-            type="number"
-            value={year}
-            onChange={(e) => setYear(Number(e.target.value))}
-            className="mt-1 w-24 rounded-xl border border-border px-3 py-2 text-sm outline-none focus:border-terracotta focus:ring-2 focus:ring-terracotta/20"
-          />
-        </div>
+        {data && <ReportActions onExportCsv={handleExportCsv} />}
       </div>
 
       {isError ? (
@@ -51,6 +70,8 @@ export function MonthlyView() {
         </div>
       ) : (
         <>
+          <PrintHeader title="Sales Report — Monthly" subtitle={`${MONTH_NAMES[month - 1]} ${year}`} />
+
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
             <StatCard label="Total revenue" value={formatCurrency(data.total_revenue)} icon={<DollarSign size={20} />} />
             <StatCard label="Total profit" value={formatCurrency(data.total_profit)} icon={<TrendingUp size={20} />} accent="success" />
